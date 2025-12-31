@@ -1,0 +1,5 @@
+{
+  "name": "Ekshit",
+  "description": "A robust, production-ready React application boilerplate configured with TypeScript, Tailwind CSS, and Google GenAI SDK integration points.",
+  "requestFramePermissions": []
+}
