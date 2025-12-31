@@ -348,7 +348,7 @@ export const CINEMA_COLLECTION: Film[] = [
     director: "Danny and Michael Philippou",
     year: "2024",
     quote: "Some doors should stay closed.",
-    image: "https://images.unsplash.com/photo-1542204165-65926c4cc8e8?auto=format&fit=crop&q=80&w=600",
+    image: "https://raw.githubusercontent.com/bongchong-in/ekshitmadan/refs/heads/main/images/Bring%20Her%20Back.jpg",
     imdbUrl: "https://www.imdb.com/find/?q=Bring+Her+Back+Danny+Michael+Philippou"
   },
   {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowDown, Search, Play, Mail, Instagram, Plus } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowDown, Search, Play, Mail, Instagram, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { DESK_BOOKS, COLLECTION, CINEMA_COLLECTION } from './data';
 import { Book, Film } from './types';
 import { Grain, CustomCursor, Reveal } from './components/Visuals';
@@ -24,6 +24,9 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Refs for scrolling
+  const cinemaScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,6 +83,16 @@ export default function App() {
       setSubmitStatus('error');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const scrollCinema = (direction: 'left' | 'right') => {
+    if (cinemaScrollRef.current) {
+        const scrollAmount = window.innerWidth < 768 ? 280 : 350;
+        cinemaScrollRef.current.scrollBy({
+            left: direction === 'left' ? -scrollAmount : scrollAmount,
+            behavior: 'smooth'
+        });
     }
   };
 
@@ -257,7 +270,6 @@ export default function App() {
                  </Reveal>
                  
                  {/* Mobile: Horizontal scrollable pills. Desktop: Vertical list. */}
-                 {/* Removed Reveal from filters to ensure visibility regardless of scroll position */}
                  <div className="flex overflow-x-auto md:flex-col gap-4 pb-4 md:pb-0 hide-scrollbar snap-x">
                     {categories.map((cat, idx) => (
                        <div key={cat} className="snap-start flex-shrink-0">
@@ -373,14 +385,35 @@ export default function App() {
                  </div>
 
                  {/* Reel / Gallery Column */}
-                 <div className="w-full md:w-2/3 min-w-0">
-                    {/* Simplified: Removed per-item Reveal and snap scroll effects for robust horizontal scrolling */}
+                 <div className="w-full md:w-2/3 min-w-0 relative">
+                    
+                    {/* Desktop Navigation Controls */}
+                    <div className="hidden md:flex justify-end gap-4 mb-8 pr-16 relative z-30">
+                        <button 
+                            onClick={() => scrollCinema('left')}
+                            className="w-12 h-12 rounded-full border border-[#E8E6E1]/20 flex items-center justify-center hover:bg-[#E8E6E1] hover:text-[#1A1816] transition-all duration-300 interactive group backdrop-blur-sm"
+                            aria-label="Scroll Left"
+                        >
+                            <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+                        </button>
+                        <button 
+                            onClick={() => scrollCinema('right')}
+                            className="w-12 h-12 rounded-full border border-[#E8E6E1]/20 flex items-center justify-center hover:bg-[#E8E6E1] hover:text-[#1A1816] transition-all duration-300 interactive group backdrop-blur-sm"
+                            aria-label="Scroll Right"
+                        >
+                            <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
+                        </button>
+                    </div>
+
                     <Reveal delay={300}>
-                      <div className="flex gap-6 overflow-x-auto pb-12 pt-4 w-full hide-scrollbar">
+                      <div 
+                        ref={cinemaScrollRef}
+                        className="flex gap-6 overflow-x-auto pb-12 pt-4 w-full hide-scrollbar snap-x scroll-smooth"
+                      >
                          {CINEMA_COLLECTION.map((film) => (
                              <div 
                                 key={film.id} 
-                                className="relative shrink-0 w-[260px] md:w-[300px] group cursor-pointer interactive"
+                                className="relative shrink-0 w-[260px] md:w-[300px] group cursor-pointer interactive snap-start"
                                 onClick={() => setSelectedFilm(film)}
                              >
                                 <div className="aspect-[2/3] bg-[#000] relative overflow-hidden mb-6 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]">
